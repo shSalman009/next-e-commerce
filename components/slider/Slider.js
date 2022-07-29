@@ -15,11 +15,11 @@ export default function Slider() {
                     width: 100%;
                 }
             `}</style>
-            <div className="main">
+            <div className="main my-2">
                 <Image
                     width={100}
                     height={60}
-                    src="/background.png"
+                    src="/bg.jpg"
                     layout="responsive"
                 />
             </div>

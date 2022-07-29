@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Slider from "../components/slider/Slider";
 import styles from "../styles/Home.module.css";
+import TShrits from "./tShrits";
 
 export default function Home() {
     return (
@@ -16,6 +17,7 @@ export default function Home() {
 
             <main>
                 <Slider />
+                <TShrits />
             </main>
         </div>
     );
