@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Slider from "../components/slider/Slider";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
@@ -13,7 +14,9 @@ export default function Home() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <div className="bg-slate-600">hello</div>
+            <main>
+                <Slider />
+            </main>
         </div>
     );
 }
