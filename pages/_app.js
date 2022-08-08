@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Slide, toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Footer from "../components/Footer";
 import Topbar from "../components/topbar/Topbar";
 import "../styles/globals.css";
@@ -17,6 +19,15 @@ function MyApp({ Component, pageProps }) {
     }
     setCart(newCart);
     localStorage.setItem("cart", JSON.stringify(newCart));
+    toast.success(" Add to cart successfully!", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
   };
 
   const removeFromCart = (itemCode, qty) => {
@@ -40,6 +51,18 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
+      <ToastContainer
+        position="top-center"
+        transition={Slide}
+        autoClose={2000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Topbar addToCart={addToCart} cart={cart} />
 
       <Component
