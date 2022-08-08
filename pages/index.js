@@ -2,7 +2,7 @@ import Head from "next/head";
 import React from "react";
 import Slider from "../components/slider/Slider";
 import styles from "../styles/Home.module.css";
-import TShrits from "./tShrits";
+import TShirts from "./tShirts";
 
 export default function Home() {
   return (
@@ -15,7 +15,7 @@ export default function Home() {
 
       <main>
         <Slider />
-        <TShrits />
+        <TShirts />
       </main>
     </div>
   );

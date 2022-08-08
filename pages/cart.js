@@ -1,6 +1,7 @@
 import React from "react";
 
 export default function cart({ cart, addToCart, removeFromCart }) {
+  console.log(cart);
   return (
     <div className="bg-gray-100">
       <div className="container mx-auto mt-10">
@@ -33,11 +34,7 @@ export default function cart({ cart, addToCart, removeFromCart }) {
                 >
                   <div className="flex w-2/5">
                     <div className="w-20">
-                      <img
-                        className="h-24"
-                        src="https://drive.google.com/uc?id=18KkAVkGFvaGNqPy2DIvTqmUH_nk39o3z"
-                        alt=""
-                      />
+                      <img className="h-24" src={cart[item].img} alt="" />
                     </div>
                     <div className="flex flex-col justify-between ml-4 flex-grow">
                       <span className="font-bold text-sm">
