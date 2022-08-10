@@ -1,7 +1,62 @@
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 
-export default function login() {
+export default function Login() {
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const res = await response.json();
+      if (res.status === 200) {
+        setData({
+          email: "",
+          password: "",
+        });
+        toast.success("Login successfully!", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Sorry! Something wrong happen. try again", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
   return (
     <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -18,7 +73,7 @@ export default function login() {
             </Link>
           </p>
         </div>
-        <form className="mt-8 space-y-6" action="#" method="POST">
+        <form className="mt-8 space-y-6" method="POST" onSubmit={handleSubmit}>
           <input type="hidden" name="remember" defaultValue="true" />
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
@@ -26,6 +81,8 @@ export default function login() {
                 Email address
               </label>
               <input
+                value={data.email}
+                onChange={handleChange}
                 id="email-address"
                 name="email"
                 type="email"
@@ -40,6 +97,8 @@ export default function login() {
                 Password
               </label>
               <input
+                value={data.password}
+                onChange={handleChange}
                 id="password"
                 name="password"
                 type="password"

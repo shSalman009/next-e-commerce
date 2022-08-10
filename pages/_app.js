@@ -7,7 +7,6 @@ import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
   const [cart, setCart] = useState({});
-  const [subTotal, setSubTotal] = useState(0);
 
   const addToCart = (itemCode, qty, price, name, size, variant, img) => {
     console.log(itemCode, qty, price, name, size, variant);

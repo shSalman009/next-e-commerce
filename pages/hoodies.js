@@ -3,7 +3,8 @@ import Link from "next/link";
 import React from "react";
 import Product from "../model/Product";
 
-export default function TShirts({ products }) {
+export default function Hoodies({ products }) {
+  console.log(products);
   return (
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-24 mx-auto">
@@ -63,33 +64,33 @@ export async function getServerSideProps(context) {
     await mongoose.connect(process.env.MONGO_URI);
   }
 
-  const products = await Product.find({ category: "t-shirt" });
+  const products = await Product.find({ category: "hoodies" });
 
-  const tShirts = {};
+  const hoodies = {};
   for (let item of products) {
-    if (item.title in tShirts) {
+    if (item.title in hoodies) {
       if (
-        !tShirts[item.title].color.includes(item.color) &&
+        !hoodies[item.title].color.includes(item.color) &&
         item.availibleQty > 0
       ) {
-        tShirts[item.title].color.push(item.color);
+        hoodies[item.title].color.push(item.color);
       }
       if (
-        !tShirts[item.title].size.includes(item.size) &&
+        !hoodies[item.title].size.includes(item.size) &&
         item.availibleQty > 0
       ) {
-        tShirts[item.title].size.push(item.size);
+        hoodies[item.title].size.push(item.size);
       }
     } else {
-      tShirts[item.title] = JSON.parse(JSON.stringify(item));
+      hoodies[item.title] = JSON.parse(JSON.stringify(item));
       if (item.availibleQty > 0) {
-        tShirts[item.title].color = [item.color];
-        tShirts[item.title].size = [item.size];
+        hoodies[item.title].color = [item.color];
+        hoodies[item.title].size = [item.size];
       }
     }
   }
 
   return {
-    props: { products: tShirts },
+    props: { products: hoodies },
   };
 }

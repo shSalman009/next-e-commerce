@@ -1,7 +1,62 @@
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 
-export default function signup() {
+export default function Signup() {
+  const [data, setData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:3000/api/signup", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      await response.json();
+      setData({
+        name: "",
+        email: "",
+        password: "",
+      });
+      toast.success("Account create successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error("Sorry! Something wrong happen. try again", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
   return (
     <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -18,14 +73,15 @@ export default function signup() {
             </Link>
           </p>
         </div>
-        <form className="mt-8 space-y-6" action="#" method="POST">
-          <input type="hidden" name="remember" defaultValue="true" />
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="name" className="sr-only">
                 Name
               </label>
               <input
+                value={data.name}
+                onChange={handleChange}
                 id="name"
                 name="name"
                 type="text"
@@ -40,6 +96,8 @@ export default function signup() {
                 Email address
               </label>
               <input
+                value={data.email}
+                onChange={handleChange}
                 id="email-address"
                 name="email"
                 type="email"
@@ -54,27 +112,15 @@ export default function signup() {
                 Password
               </label>
               <input
+                value={data.password}
+                onChange={handleChange}
                 id="password"
                 name="password"
                 type="password"
                 autoComplete="current-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none rounded-b-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
-              />
-            </div>
-            <div>
-              <label htmlFor="confirm-password" className="sr-only">
-                Confirm Password
-              </label>
-              <input
-                id="confirm-password"
-                name="confirm-password"
-                type="password"
-                autoComplete="confirm-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Confirm Password"
               />
             </div>
           </div>

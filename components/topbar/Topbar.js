@@ -26,7 +26,10 @@ export default function Topbar() {
           <Link href="/tShirts">
             <a className="mr-5 hover:text-gray-900">T-Shirts</a>
           </Link>
-          <a className="mr-5 hover:text-gray-900">Third Link</a>
+          <Link href="/hoodies">
+            <a className="mr-5 hover:text-gray-900">Hoodies</a>
+          </Link>
+
           <a className="mr-5 hover:text-gray-900">Fourth Link</a>
         </nav>
         <Link href="/cart">
