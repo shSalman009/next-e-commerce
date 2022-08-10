@@ -18,34 +18,33 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch("http://localhost:3000/api/login", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+    const response = await fetch("http://localhost:3000/api/login", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const res = await response.json();
+
+    if (res.success) {
+      toast.success(res.message, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
-      const res = await response.json();
-      if (res.status === 200) {
-        setData({
-          email: "",
-          password: "",
-        });
-        toast.success("Login successfully!", {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Sorry! Something wrong happen. try again", {
+      setData({
+        email: "",
+        password: "",
+      });
+      localStorage.setItem("token", JSON.stringify(res.token));
+    } else if (res.error) {
+      toast.error(res.message, {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: true,

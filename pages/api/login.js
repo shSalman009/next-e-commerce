@@ -3,6 +3,7 @@
 import connectDb from "../../middleware/mongoose";
 import User from "../../model/User";
 var CryptoJS = require("crypto-js");
+var jwt = require("jsonwebtoken");
 
 function isValidJSONString(data) {
   try {
@@ -19,22 +20,28 @@ const handler = async (req, res) => {
 
     const user = await User.findOne({ email: data.email });
 
-    const bytes = CryptoJS.AES.decrypt(user.password, "secret key 123");
-    const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
-
     if (user) {
+      const bytes = CryptoJS.AES.decrypt(user.password, "secret key 123");
+      const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
+
       if (user.email === data.email && decryptedPassword === data.password) {
-        res.status(200).json({ status: 200, success: "successfully logined" });
+        var token = jwt.sign({ email: user.email, name: user.name }, "secret");
+
+        res
+          .status(200)
+          .json({ success: true, message: "User login successfully", token });
       } else {
         res
           .status(400)
-          .json({ status: 400, error: "User information is not correct" });
+          .json({ error: true, message: "User information is not correct" });
       }
     } else {
-      res.status(404).json({ status: 404, error: "User not defined" });
+      res.status(404).json({ error: true, message: "User not defined" });
     }
   } else {
-    res.status(400).json({ status: 400, error: "Request method is not valid" });
+    res
+      .status(405)
+      .json({ error: true, message: "Request method is not valid" });
   }
 };
 

@@ -6,6 +6,7 @@ import Topbar from "../components/topbar/Topbar";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
+  const [user, setUser] = useState(null);
   const [cart, setCart] = useState({});
 
   const addToCart = (itemCode, qty, price, name, size, variant, img) => {
@@ -47,6 +48,14 @@ function MyApp({ Component, pageProps }) {
       setCart(JSON.parse(get));
     }
   }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setUser(JSON.parse(token));
+    }
+  }, []);
+
+  console.log(user);
 
   return (
     <>
@@ -62,7 +71,7 @@ function MyApp({ Component, pageProps }) {
         draggable
         pauseOnHover
       />
-      <Topbar addToCart={addToCart} cart={cart} />
+      <Topbar user={user} addToCart={addToCart} cart={cart} />
 
       <Component
         {...pageProps}

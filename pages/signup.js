@@ -19,22 +19,18 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch("http://localhost:3000/api/signup", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      await response.json();
-      setData({
-        name: "",
-        email: "",
-        password: "",
-      });
-      toast.success("Account create successfully!", {
+    const response = await fetch("http://localhost:3000/api/signup", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const res = await response.json();
+
+    if (res.success) {
+      toast.success(res.message, {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: true,
@@ -43,9 +39,13 @@ export default function Signup() {
         draggable: true,
         progress: undefined,
       });
-    } catch (error) {
-      console.log(error);
-      toast.error("Sorry! Something wrong happen. try again", {
+      setData({
+        name: "",
+        email: "",
+        password: "",
+      });
+    } else if (res.error) {
+      toast.error(res.message, {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: true,
@@ -55,6 +55,8 @@ export default function Signup() {
         progress: undefined,
       });
     }
+
+    console.log(res);
   };
 
   return (

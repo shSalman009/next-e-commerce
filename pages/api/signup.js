@@ -23,12 +23,26 @@ const handler = async (req, res) => {
       "secret key 123"
     ).toString();
 
-    const u = new User({ name, email, password: encryptedPassword });
-    await u.save();
+    try {
+      const u = await new User({ name, email, password: encryptedPassword });
+      await u.save();
 
-    res.status(200).json({ success: "success" });
+      res
+        .status(200)
+        .json({ success: true, message: "User create successfully" });
+    } catch (error) {
+      if (error.message.includes("duplicate key error collection")) {
+        res
+          .status(400)
+          .json({ error: true, message: "This email is already used" });
+      } else {
+        res
+          .status(400)
+          .json({ error: true, message: "Something wrong happen!" });
+      }
+    }
   } else {
-    res.status(400).json({ error: "error occured" });
+    res.status(405).json({ error: "error occured" });
   }
 };
 
