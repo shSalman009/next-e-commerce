@@ -2,6 +2,7 @@
 
 import connectDb from "../../middleware/mongoose";
 import User from "../../model/User";
+var CryptoJS = require("crypto-js");
 
 function isValidJSONString(data) {
   try {
@@ -17,8 +18,12 @@ const handler = async (req, res) => {
     const data = isValidJSONString(req.body);
 
     const user = await User.findOne({ email: data.email });
+
+    const bytes = CryptoJS.AES.decrypt(user.password, "secret key 123");
+    const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
+
     if (user) {
-      if (user.email === data.email && user.password === data.password) {
+      if (user.email === data.email && decryptedPassword === data.password) {
         res.status(200).json({ status: 200, success: "successfully logined" });
       } else {
         res
