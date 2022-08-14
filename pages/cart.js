@@ -1,7 +1,26 @@
 import React from "react";
+import getStripe from "../lib/getStripe";
 
-export default function cart({ cart, addToCart, removeFromCart }) {
-  console.log(cart);
+export default function cart({ cart, addToCart, removeFromCart, subTotal }) {
+  const handleCheckout = async () => {
+    const stripe = await getStripe();
+
+    const response = await fetch(`/api/stripe`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ cart }),
+    });
+
+    if (response.statusCode === 500) return;
+
+    const data = await response.json();
+    console.log("data ===", data);
+    stripe.redirectToCheckout({ sessionId: data.id });
+  };
+
   return (
     <div className="bg-gray-100">
       <div className="container mx-auto mt-10">
@@ -139,7 +158,11 @@ export default function cart({ cart, addToCart, removeFromCart }) {
                 <span>Total cost</span>
                 <span>$600</span>
               </div>
-              <button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">
+
+              <button
+                onClick={handleCheckout}
+                className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full"
+              >
                 Checkout
               </button>
             </div>

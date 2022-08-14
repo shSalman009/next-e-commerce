@@ -1,13 +1,19 @@
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Slide, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import LoadingBar from "react-top-loading-bar";
 import Footer from "../components/Footer";
 import Topbar from "../components/topbar/Topbar";
+import UserContext from "../context/UserContext";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
-  const [user, setUser] = useState(null);
+  const [progress, setProgress] = useState(0);
   const [cart, setCart] = useState({});
+  const [subTotal, setSubTotal] = useState(0);
+
+  const router = useRouter();
 
   const addToCart = (itemCode, qty, price, name, size, variant, img) => {
     console.log(itemCode, qty, price, name, size, variant);
@@ -47,39 +53,59 @@ function MyApp({ Component, pageProps }) {
     if (get) {
       setCart(JSON.parse(get));
     }
-  }, []);
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setUser(JSON.parse(token));
-    }
-  }, []);
 
-  console.log(user);
+    router.events.on("routeChangeStart", () => {
+      setProgress(20);
+    });
+    router.events.on("routeChangeComplete", () => {
+      setProgress(100);
+    });
+  }, [router.events]);
+
+  useEffect(() => {
+    const copy = { ...cart };
+
+    if (copy) {
+      let total = 0;
+      for (let item in copy) {
+        total += copy[item].price * copy[item].qty;
+      }
+      setSubTotal(total);
+    }
+  }, [cart]);
 
   return (
     <>
-      <ToastContainer
-        position="top-center"
-        transition={Slide}
-        autoClose={2000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      <Topbar user={user} addToCart={addToCart} cart={cart} />
+      <UserContext>
+        <LoadingBar
+          color="blue"
+          progress={progress}
+          onLoaderFinished={() => setProgress(0)}
+        />
 
-      <Component
-        {...pageProps}
-        addToCart={addToCart}
-        cart={cart}
-        removeFromCart={removeFromCart}
-      />
-      <Footer />
+        <ToastContainer
+          position="top-center"
+          transition={Slide}
+          autoClose={2000}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+        <Topbar addToCart={addToCart} cart={cart} />
+
+        <Component
+          {...pageProps}
+          cart={cart}
+          subTotal={subTotal}
+          addToCart={addToCart}
+          removeFromCart={removeFromCart}
+        />
+        <Footer />
+      </UserContext>
     </>
   );
 }

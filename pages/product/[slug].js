@@ -11,7 +11,7 @@ export default function Slug({ addToCart, cart, product, variants }) {
 
   const changeProduct = (color, size) => {
     console.log(color, size);
-    const url = `http://localhost:3000/product/${variants[color][size]["slug"]}`;
+    const url = `${process.env.NEXT_PUBLIC_HOST}/product/${variants[color][size]["slug"]}`;
     window.location = url;
   };
 

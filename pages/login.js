@@ -1,12 +1,18 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useUser } from "../context/UserContext";
 
 export default function Login() {
   const [data, setData] = useState({
     email: "",
     password: "",
   });
+
+  const { user } = useUser();
+
+  const router = useRouter();
 
   const handleChange = (e) => {
     setData({
@@ -18,7 +24,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:3000/api/login", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/login`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -43,6 +49,7 @@ export default function Login() {
         password: "",
       });
       localStorage.setItem("token", JSON.stringify(res.token));
+      router.push("/");
     } else if (res.error) {
       toast.error(res.message, {
         position: "top-center",
@@ -55,6 +62,12 @@ export default function Login() {
       });
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user]);
 
   return (
     <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">

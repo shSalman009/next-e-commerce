@@ -4,7 +4,6 @@ import React from "react";
 import Product from "../model/Product";
 
 export default function Hoodies({ products }) {
-  console.log(products);
   return (
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-24 mx-auto">

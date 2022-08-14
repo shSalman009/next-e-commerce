@@ -19,12 +19,17 @@ const products = [
   // More products...
 ];
 
-export default function Example({ cart }) {
+export default function Example({ cart, subTotal }) {
+  const initiatePayment = async (e) => {};
+
   return (
     <div className="bg-gray-200 py-10">
       <div className="container mx-auto">
         <div className=" p-4  leading-loose flex justify-evenly">
-          <form className="max-w-lg m-4 p-4 bg-white rounded shadow-xl w-1/2">
+          <form
+            onSubmit={initiatePayment}
+            className="max-w-lg m-4 p-4 bg-white rounded shadow-xl w-1/2"
+          >
             <p className="text-gray-800 font-medium">Customer information</p>
             <div className="">
               <label className="block text-sm text-gray-600" htmlFor="cus_name">
