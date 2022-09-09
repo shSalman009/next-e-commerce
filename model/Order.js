@@ -3,15 +3,17 @@ const { default: mongoose } = require("mongoose");
 const OrderSchema = new mongoose.Schema(
   {
     email: { type: String, required: true },
-    products: [
-      {
-        productId: { type: String },
-        quantity: { type: Number, default: 1 },
-      },
-    ],
+    orderId: { type: String, required: true },
+    paymentInfo: { type: String, default: "" },
+    // products: [
+    //   {
+    //     productId: { type: String },
+    //     quantity: { type: Number, default: 1 },
+    //   },
+    // ],
     address: { type: String, required: true },
     amount: { type: Number, required: true },
-    address: { type: String, Default: "Pending", required: true },
+    // address: { type: String, Default: "Pending", required: true },
   },
   { timestamps: true }
 );

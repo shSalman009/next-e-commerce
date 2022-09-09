@@ -16,7 +16,6 @@ function MyApp({ Component, pageProps }) {
   const router = useRouter();
 
   const addToCart = (itemCode, qty, price, name, size, variant, img) => {
-    console.log(itemCode, qty, price, name, size, variant);
     let newCart = { ...cart };
     if (itemCode in cart) {
       newCart[itemCode].qty = cart[itemCode].qty + qty;
