@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 export default function Form() {
@@ -11,6 +11,8 @@ export default function Form() {
     zip: "",
   });
 
+  const router = useRouter();
+
   const handleChange = (e) => {
     setData({
       ...data,
@@ -18,12 +20,19 @@ export default function Form() {
     });
   };
 
-  const initiatePayment = async (e) => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    router.push({
+      pathname: "/payment",
+      query: data,
+    });
+  };
 
   const { name, email, street, city, country, zip } = data;
   return (
     <form
-      onSubmit={initiatePayment}
+      onSubmit={handleSubmit}
       className="max-w-lg m-4 p-4 bg-white rounded shadow-xl w-1/2"
     >
       <p className="text-gray-800 font-medium">Customer information</p>
@@ -37,7 +46,7 @@ export default function Form() {
           onChange={handleChange}
           className="w-full px-2 py-2 text-gray-700 bg-gray-200 rounded"
           type="text"
-          required=""
+          required
           placeholder="Your Name"
           aria-label="Name"
         />
@@ -52,7 +61,7 @@ export default function Form() {
           onChange={handleChange}
           className="w-full px-2 py-2 text-gray-700 bg-gray-200 rounded"
           type="email"
-          required=""
+          required
           placeholder="Your Email"
           aria-label="Email"
         />
@@ -67,7 +76,7 @@ export default function Form() {
           onChange={handleChange}
           className="w-full px-2 py-2 text-gray-700 bg-gray-200 rounded"
           type="text"
-          required=""
+          required
           placeholder="Street"
           aria-label="Email"
         />
@@ -85,7 +94,7 @@ export default function Form() {
           onChange={handleChange}
           className="w-full px-2 py-2 text-gray-700 bg-gray-200 rounded"
           type="text"
-          required=""
+          required
           placeholder="City"
           aria-label="Email"
         />
@@ -103,7 +112,7 @@ export default function Form() {
           onChange={handleChange}
           className="w-full px-2 py-2 text-gray-700 bg-gray-200 rounded"
           type="text"
-          required=""
+          required
           placeholder="Country"
           aria-label="Email"
         />
@@ -120,23 +129,16 @@ export default function Form() {
           value={zip}
           onChange={handleChange}
           className="w-full px-2 py-2 text-gray-700 bg-gray-200 rounded"
-          type="text"
-          required=""
+          type="number"
+          required
           placeholder="Zip"
           aria-label="Email"
         />
       </div>
       <div className="mt-4">
-        <Link
-          href={{
-            pathname: "/payment",
-            query: data,
-          }}
-        >
-          <button className="px-4 py-1 text-white font-light tracking-wider bg-gray-900 rounded">
-            Go for payment
-          </button>
-        </Link>
+        <button className="px-4 py-1 text-white font-light tracking-wider bg-gray-900 rounded">
+          Go for payment
+        </button>
       </div>
     </form>
   );

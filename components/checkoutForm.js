@@ -6,7 +6,7 @@ import {
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
-export default function CheckoutForm({ buyerInfo }) {
+export default function CheckoutForm({ orderData, cart }) {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -69,12 +69,12 @@ export default function CheckoutForm({ buyerInfo }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          data: buyerInfo,
+          data: orderData,
         }),
       });
 
       if (response.status === 200) {
-        await router.push("http://localhost:3000");
+        // await router.push("http://localhost:3000");
       }
     } else {
       if (error.type === "card_error" || error.type === "validation_error") {
@@ -95,7 +95,9 @@ export default function CheckoutForm({ buyerInfo }) {
         id="submit"
         className="px-4 py-1 text-white font-light tracking-wider bg-gray-900 rounded mt-5"
       >
-        <span id="button-text">{isLoading ? "Is loading" : "Pay now"}</span>
+        <span id="button-text">
+          {isLoading ? "Loading..." : `Pay $${orderData.total}`}
+        </span>
       </button>
       {/* Show any error or success messages */}
       {message && <div id="payment-message">{message}</div>}
