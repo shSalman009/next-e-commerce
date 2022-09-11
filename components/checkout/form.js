@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import shortid from "shortid";
 
 export default function Form() {
   const [data, setData] = useState({
@@ -23,9 +24,13 @@ export default function Form() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const generateId = shortid.generate();
+
+    const sendData = { ...data, orderId: generateId };
+
     router.push({
       pathname: "/payment",
-      query: data,
+      query: sendData,
     });
   };
 

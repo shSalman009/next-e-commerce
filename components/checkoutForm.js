@@ -6,7 +6,7 @@ import {
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
-export default function CheckoutForm({ orderData, cart }) {
+export default function CheckoutForm({ orderId, totalPrice }) {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -56,25 +56,28 @@ export default function CheckoutForm({ orderData, cart }) {
 
     setIsLoading(true);
 
-    const { error } = await stripe.confirmPayment({
+    const confirmPayment = await stripe.confirmPayment({
       elements,
       confirmParams: {
         return_url: "http://localhost:3000",
       },
       redirect: "if_required",
     });
+    console.log("test");
+    console.log(confirmPayment);
+    const { error } = confirmPayment;
 
     if (!error) {
-      const response = await fetch("/api/addOrder", {
+      const response = await fetch("/api/paymentDone", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          data: orderData,
+          orderId,
         }),
       });
 
       if (response.status === 200) {
-        // await router.push("http://localhost:3000");
+        await router.push("http://localhost:3000/success");
       }
     } else {
       if (error.type === "card_error" || error.type === "validation_error") {
@@ -96,7 +99,7 @@ export default function CheckoutForm({ orderData, cart }) {
         className="px-4 py-1 text-white font-light tracking-wider bg-gray-900 rounded mt-5"
       >
         <span id="button-text">
-          {isLoading ? "Loading..." : `Pay $${orderData.total}`}
+          {isLoading ? "Loading..." : `Pay $${totalPrice}`}
         </span>
       </button>
       {/* Show any error or success messages */}

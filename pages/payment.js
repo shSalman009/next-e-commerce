@@ -2,16 +2,18 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import shortid from "shortid";
 import CheckoutForm from "../components/checkoutForm";
 
-export default function Payment({ subTotal }) {
+export default function Payment({ subTotal, cart }) {
   const [clientSecret, setClientSecret] = React.useState("");
 
   const orderInfo = useRouter().query;
-  const orderId = shortid.generate();
 
-  const orderData = { ...orderInfo, orderId, total: subTotal };
+  const orderData = {
+    ...orderInfo,
+    total: subTotal,
+    products: cart,
+  };
 
   const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
@@ -32,13 +34,14 @@ export default function Payment({ subTotal }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          price: subTotal,
+          data: orderData,
         }),
       });
       const data = await response.json();
 
       setClientSecret(data.clientSecret);
     };
+
     fetctRes();
   }, []);
 
@@ -48,7 +51,7 @@ export default function Payment({ subTotal }) {
         <div className="shadow-md p-10 rounded-md">
           {clientSecret && (
             <Elements options={options} stripe={stripePromise}>
-              <CheckoutForm orderData={orderData} />
+              <CheckoutForm orderId={orderData.orderId} totalPrice={subTotal} />
             </Elements>
           )}
         </div>
