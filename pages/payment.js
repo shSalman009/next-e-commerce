@@ -14,6 +14,7 @@ export default function Payment({ subTotal, cart }) {
     total: subTotal,
     products: cart,
   };
+  console.log(cart);
 
   const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY

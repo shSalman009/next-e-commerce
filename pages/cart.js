@@ -2,25 +2,6 @@ import Link from "next/link";
 import React from "react";
 
 export default function cart({ cart, addToCart, removeFromCart, subTotal }) {
-  // const handleCheckout = async () => {
-  //   const stripe = await getStripe();
-
-  //   const response = await fetch(`/api/stripe`, {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ cart }),
-  //   });
-
-  //   if (response.statusCode === 500) return;
-
-  //   const data = await response.json();
-  //   console.log("data ===", data);
-  //   stripe.redirectToCheckout({ sessionId: data.id });
-  // };
-
   return (
     <div className="bg-gray-100">
       <div className="container mx-auto mt-10">

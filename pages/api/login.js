@@ -25,7 +25,10 @@ const handler = async (req, res) => {
       const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
 
       if (user.email === data.email && decryptedPassword === data.password) {
-        var token = jwt.sign({ email: user.email, name: user.name }, "secret");
+        const token = jwt.sign(
+          { email: user.email, name: user.name },
+          "secret"
+        );
 
         res
           .status(200)

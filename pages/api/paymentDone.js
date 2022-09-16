@@ -7,7 +7,7 @@ async function handler(req, res) {
   const order = await Order.findOneAndUpdate({ orderId }, { status: "paid" });
   await order.save();
 
-  await res.status(200).json({ message: "success" });
+  res.status(200).json({ id: order._id });
 }
 
 export default connectDb(handler);

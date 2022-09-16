@@ -63,8 +63,7 @@ export default function CheckoutForm({ orderId, totalPrice }) {
       },
       redirect: "if_required",
     });
-    console.log("test");
-    console.log(confirmPayment);
+
     const { error } = confirmPayment;
 
     if (!error) {
@@ -76,8 +75,13 @@ export default function CheckoutForm({ orderId, totalPrice }) {
         }),
       });
 
+      const data = await response.json();
+
       if (response.status === 200) {
-        await router.push("http://localhost:3000/success");
+        await router.push({
+          pathname: `success`,
+          query: { id: data.id },
+        });
       }
     } else {
       if (error.type === "card_error" || error.type === "validation_error") {

@@ -1,7 +1,11 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
+import { AiOutlineHome } from "react-icons/ai";
 
-export default function success() {
+export default function Success() {
+  const { query } = useRouter();
+
   return (
     <div className="bg-wj-100 h-screen">
       <div className="container mx-auto">
@@ -17,20 +21,22 @@ export default function success() {
           </svg>
           <div className="text-center">
             <h3 className="md:text-2xl text-base text-gray-900 font-semibold text-center">
-              Payment Done!
+              Payment Successful!
             </h3>
             <p className="text-gray-600 my-2">
               Thank you for purchase our product.
             </p>
-            <p> Have a great day! </p>
-            <div className="py-10 text-center">
+            <p> Have a great day</p>
+            <div className="py-10 flex items-center justify-center space-x-4">
               <Link href={"/"}>
-                <a
-                  href="#"
-                  className="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3"
-                >
-                  GO BACK
-                </a>
+                <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 gap-2">
+                  <AiOutlineHome /> Go Home
+                </button>
+              </Link>
+              <Link href={`order?id=${query.id}`}>
+                <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                  Order Details &rarr;
+                </button>
               </Link>
             </div>
           </div>
