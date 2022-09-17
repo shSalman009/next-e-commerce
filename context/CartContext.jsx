@@ -1,9 +1,6 @@
-import mongoose from "mongoose";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
-import Product from "../model/Product";
 
 const Context = createContext();
 
@@ -90,15 +87,4 @@ export default function CartContext({ children }) {
       {children}
     </Context.Provider>
   );
-}
-export async function getStaticProps(context) {
-  if (!mongoose.connections[0].readyState) {
-    await mongoose.connect(process.env.MONGO_URI);
-  }
-
-  const products = await Product.find();
-  console.log(products);
-  return {
-    props: { products }, // will be passed to the page component as props
-  };
 }
