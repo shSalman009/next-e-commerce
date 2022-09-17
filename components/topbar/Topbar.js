@@ -10,7 +10,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Topbar({ cart }) {
+export default function Topbar() {
   const { user, logOut } = useUser();
 
   return (

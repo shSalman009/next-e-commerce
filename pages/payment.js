@@ -1,20 +1,20 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import CheckoutForm from "../components/checkoutForm";
 
-export default function Payment({ subTotal, cart }) {
-  const [clientSecret, setClientSecret] = React.useState("");
+export default function Payment({ subTotal, cart, clearCart }) {
+  const [clientSecret, setClientSecret] = useState("");
 
   const orderInfo = useRouter().query;
 
   const orderData = {
     ...orderInfo,
+    cart,
     total: subTotal,
-    products: cart,
   };
-  console.log(cart);
 
   const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
@@ -38,9 +38,21 @@ export default function Payment({ subTotal, cart }) {
           data: orderData,
         }),
       });
-      const data = await response.json();
+      const res = await response.json();
 
-      setClientSecret(data.clientSecret);
+      if (res.success) {
+        setClientSecret(res.clientSecret);
+      } else {
+        toast.error(res.message, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     };
 
     fetctRes();
@@ -52,7 +64,11 @@ export default function Payment({ subTotal, cart }) {
         <div className="shadow-md p-10 rounded-md">
           {clientSecret && (
             <Elements options={options} stripe={stripePromise}>
-              <CheckoutForm orderId={orderData.orderId} totalPrice={subTotal} />
+              <CheckoutForm
+                orderId={orderData.orderId}
+                totalPrice={subTotal}
+                clearCart={clearCart}
+              />
             </Elements>
           )}
         </div>

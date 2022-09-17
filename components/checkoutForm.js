@@ -6,7 +6,7 @@ import {
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
-export default function CheckoutForm({ orderId, totalPrice }) {
+export default function CheckoutForm({ orderId, totalPrice, clearCart }) {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -78,6 +78,7 @@ export default function CheckoutForm({ orderId, totalPrice }) {
       const data = await response.json();
 
       if (response.status === 200) {
+        clearCart();
         await router.push({
           pathname: `success`,
           query: { id: data.id },

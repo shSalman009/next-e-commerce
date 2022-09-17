@@ -1,11 +1,13 @@
 import connectDb from "../../middleware/mongoose";
 import Order from "../../model/Order";
+import Product from "../../model/Product";
+
 const stripe = require("stripe")(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
 
 async function handler(req, res) {
   const { data } = req.body;
 
-  const { email, orderId, total, street, city, country, products } = data;
+  const { email, orderId, total, street, city, country, cart } = data;
   const address = `${street}, ${city}, ${country}`;
 
   // Create a PaymentIntent with the order amount and currency
@@ -16,6 +18,24 @@ async function handler(req, res) {
       enabled: true,
     },
   });
+  let subTotal = 0;
+  let product;
+  for (let item in cart) {
+    subTotal += cart[item].price * cart[item].qty;
+    product = await Product.findOne({ slug: item });
+
+    if (product.price !== cart[item].price) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Item price not correct" });
+    }
+  }
+
+  if (subTotal !== total) {
+    return res
+      .status(200)
+      .json({ success: false, message: "Products price not correct" });
+  }
 
   const v = await Order.find({ orderId });
 
@@ -23,7 +43,7 @@ async function handler(req, res) {
     const order = await new Order({
       email,
       orderId,
-      products,
+      products: cart,
       address,
       amount: total,
       status: "pending",
@@ -31,9 +51,9 @@ async function handler(req, res) {
     await order.save();
   }
 
-  res.send({
-    clientSecret: paymentIntent.client_secret,
-  });
+  res
+    .status(200)
+    .json({ success: true, clientSecret: paymentIntent.client_secret });
 }
 
 export default connectDb(handler);

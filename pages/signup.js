@@ -36,7 +36,7 @@ export default function Signup() {
     const res = await response.json();
 
     if (res.success) {
-      toast.success(res.message, {
+      toast.error(res.message, {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: true,

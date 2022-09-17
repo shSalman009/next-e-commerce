@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import Product from "../../model/Product";
 
-export default function Slug({ addToCart, cart, product, variants }) {
+export default function Slug({ addToCart, product, variants }) {
   const [color, setColor] = useState(product.color);
   const [size, setSize] = useState(product.size);
 
@@ -14,20 +14,6 @@ export default function Slug({ addToCart, cart, product, variants }) {
     const url = `${process.env.NEXT_PUBLIC_HOST}/product/${variants[color][size]["slug"]}`;
     window.location = url;
   };
-
-  // useEffect(() => {
-  //   if (color) {
-  //     for (let item in variants) {
-  //       color === item && setSizes(Object.keys(variants[item]));
-  //     }
-  //   } else {
-  //     const size = [];
-  //     for (let item in variants) {
-  //       size.push(...Object.keys(variants[item]));
-  //     }
-  //     setSizes(size);
-  //   }
-  // }, [variants, color, product]);
 
   return (
     <section className="text-gray-600 body-font overflow-hidden">
@@ -143,14 +129,7 @@ export default function Slug({ addToCart, cart, product, variants }) {
                 </a>
               </span>
             </div>
-            <p className="leading-relaxed">
-              Fam locavore kickstarter distillery. Mixtape chillwave tumeric
-              sriracha taximy chia microdosing tilde DIY. XOXO fam indxgo
-              juiceramps cornhole raw denim forage brooklyn. Everyday carry +1
-              seitan poutine tumeric. Gastropub blue bottle austin listicle
-              pour-over, neutra jean shorts keytar banjo tattooed umami
-              cardigan.
-            </p>
+            <p className="leading-relaxed">{product.desc}</p>
             <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
               <div className="flex">
                 <span className="mr-3">Color</span>
@@ -213,7 +192,7 @@ export default function Slug({ addToCart, cart, product, variants }) {
             </div>
             <div className="flex">
               <span className="title-font font-medium text-2xl text-gray-900">
-                $58.00
+                ${product.price}.00
               </span>
               <div className="flex gap-2 mx-2 ">
                 <button className="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
@@ -224,7 +203,7 @@ export default function Slug({ addToCart, cart, product, variants }) {
                     addToCart(
                       slug,
                       1,
-                      200,
+                      product.price,
                       product.title,
                       size,
                       color,
