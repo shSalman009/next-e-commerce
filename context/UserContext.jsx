@@ -37,11 +37,12 @@ export default function UserContext({ children }) {
       body: JSON.stringify(data),
     });
     const response = await res.json();
-
-    localStorage.setItem(
-      "user",
-      JSON.stringify({ email: data.email, token: response.token })
-    );
+    if (response.success) {
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ email: data.email, token: response.token })
+      );
+    }
 
     return response;
   };

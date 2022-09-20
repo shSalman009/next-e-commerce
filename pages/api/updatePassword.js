@@ -5,7 +5,10 @@ export default async function handler(req, res) {
   const { user, password } = req.body;
 
   //   decrypting current password
-  const bytes = CryptoJS.AES.decrypt(user.password, "secret key 123");
+  const bytes = CryptoJS.AES.decrypt(
+    user.password,
+    process.env.NEXT_CRYPTO_SECRET
+  );
   const pass = bytes.toString(CryptoJS.enc.Utf8);
 
   if (password.currentPassword !== pass) {
@@ -17,7 +20,7 @@ export default async function handler(req, res) {
   //   encrypting new password
   const encpass = CryptoJS.AES.encrypt(
     password.newPassword,
-    "secret key 123"
+    process.env.NEXT_CRYPTO_SECRET
   ).toString();
 
   //   updatin user password

@@ -21,13 +21,16 @@ const handler = async (req, res) => {
     const user = await User.findOne({ email: data.email });
 
     if (user) {
-      const bytes = CryptoJS.AES.decrypt(user.password, "secret key 123");
+      const bytes = CryptoJS.AES.decrypt(
+        user.password,
+        process.env.NEXT_CRYPTO_SECRET
+      );
       const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
 
       if (user.email === data.email && decryptedPassword === data.password) {
         const token = jwt.sign(
           { email: user.email, name: user.name },
-          "secret"
+          process.env.NEXT_JWT_SECRET
         );
 
         res

@@ -18,7 +18,7 @@ const handler = async (req, res) => {
     const { name, email, password } = data;
     var encryptedPassword = CryptoJS.AES.encrypt(
       password,
-      "secret key 123"
+      process.env.NEXT_CRYPTO_SECRET
     ).toString();
 
     try {
