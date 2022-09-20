@@ -1,17 +1,23 @@
-import { Menu, Transition } from "@headlessui/react";
-
 import Link from "next/link";
-import React, { Fragment } from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import { BsCartPlus } from "react-icons/bs";
 import { MdAccountCircle } from "react-icons/md";
+import { useCart } from "../../context/CartContext";
 import { useUser } from "../../context/UserContext";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 export default function Topbar() {
-  const { user, logOut } = useUser();
+  const [show, setShow] = useState(true);
+
+  const { userToken, logOut } = useUser();
+
+  const router = useRouter();
+
+  const { quantity } = useCart();
+
+  useEffect(() => {
+    setShow(false);
+  }, [router.query]);
 
   return (
     <header className="text-gray-600 body-font shadow-md">
@@ -38,81 +44,57 @@ export default function Topbar() {
 
         {/* TOPBAR RIGHT SIDE */}
         <Link href="/cart">
-          <button className="inline-flex items-center bg-gray-200 border-0 py-1 px-3 focus:outline-none hover:bg-indigo-500 hover:text-white transition duration-300  rounded text-base mt-4 md:mt-0">
+          <button
+            type="button"
+            className="inline-flex relative items-center p-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
             <BsCartPlus size={20} />
+            <span className="sr-only">Notifications</span>
+            <div className="inline-flex absolute -top-2 -right-2 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full border-2 border-white dark:border-gray-900">
+              {quantity}
+            </div>
           </button>
         </Link>
 
-        {user ? (
-          <div className="flex items-center ml-10">
-            <Menu as="div" className="relative inline-block text-left">
-              <div className="flex">
-                <Menu.Button>
-                  <MdAccountCircle size={35} cursor="pointer" />
-                </Menu.Button>
+        {userToken ? (
+          <div className="flex items-center md:order-2 relative ml-5">
+            <button
+              onClick={() => setShow(!show)}
+              type="button"
+              className="inline-flex justify-center items-center  text-sm text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              <MdAccountCircle size={35} />
+            </button>
+
+            {show && (
+              <div className="w-36 absolute top-12 right-0 z-50 my-4 text-base list-none bg-slate-50 rounded divide-y divide-gray-100 shadow ">
+                <ul className="py-1" role="none">
+                  <li>
+                    <Link href={"/myaccount"}>
+                      <div className="block  items-center py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 ">
+                        My Account
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <div
+                      onClick={logOut}
+                      className="block items-center py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 "
+                    >
+                      Sign Out
+                    </div>
+                  </li>
+                </ul>
               </div>
-
-              <Transition
-                as={Fragment}
-                enter="transition ease-out duration-100"
-                enterFrom="transform opacity-0 scale-95"
-                enterTo="transform opacity-100 scale-100"
-                leave="transition ease-in duration-75"
-                leaveFrom="transform opacity-100 scale-100"
-                leaveTo="transform opacity-0 scale-95"
-              >
-                <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  <div className="py-1">
-                    <Menu.Item>
-                      {({ active }) => (
-                        <a
-                          href="#"
-                          className={classNames(
-                            active
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-700",
-                            "block px-4 py-2 text-sm"
-                          )}
-                        >
-                          Account settings
-                        </a>
-                      )}
-                    </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <a
-                          href="#"
-                          className={classNames(
-                            active
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-700",
-                            "block px-4 py-2 text-sm"
-                          )}
-                        >
-                          Support
-                        </a>
-                      )}
-                    </Menu.Item>
-
-                    <Menu.Item>
-                      {({ active }) => (
-                        <button
-                          onClick={logOut}
-                          className={classNames(
-                            active
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-700",
-                            "block w-full text-left px-4 py-2 text-sm"
-                          )}
-                        >
-                          Sign out
-                        </button>
-                      )}
-                    </Menu.Item>
-                  </div>
-                </Menu.Items>
-              </Transition>
-            </Menu>
+            )}
+            <button
+              type="button"
+              className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+              aria-controls="mobile-menu-language-select"
+              aria-expanded="false"
+            >
+              <span className="sr-only">Open main menu</span>
+            </button>
           </div>
         ) : (
           <div className="flex gap-2 ml-10">

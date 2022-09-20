@@ -2,10 +2,11 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import CheckoutForm from "../components/checkoutForm";
+import { toastError } from "../components/Toast";
 
 export default function Payment({ subTotal, cart, clearCart }) {
+  const [message, setMessage] = useState("");
   const [clientSecret, setClientSecret] = useState("");
 
   const orderInfo = useRouter().query;
@@ -43,20 +44,18 @@ export default function Payment({ subTotal, cart, clearCart }) {
       if (res.success) {
         setClientSecret(res.clientSecret);
       } else {
-        toast.error(res.message, {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        setMessage(res.message);
       }
     };
 
     fetctRes();
   }, []);
+
+  useEffect(() => {
+    if (message) {
+      toastError(message);
+    }
+  }, [message]);
 
   return (
     <>
@@ -65,7 +64,7 @@ export default function Payment({ subTotal, cart, clearCart }) {
           {clientSecret && (
             <Elements options={options} stripe={stripePromise}>
               <CheckoutForm
-                orderId={orderData.orderId}
+                orderData={orderData}
                 totalPrice={subTotal}
                 clearCart={clearCart}
               />

@@ -9,7 +9,9 @@ export default function cart({ cart, addToCart, removeFromCart, subTotal }) {
           <div className="w-3/4 bg-white px-10 py-10">
             <div className="flex justify-between border-b pb-8">
               <h1 className="font-semibold text-2xl">Shopping Cart</h1>
-              <h2 className="font-semibold text-2xl">3 Items</h2>
+              <h2 className="font-semibold text-2xl">
+                {Object.keys(cart).length} Items
+              </h2>
             </div>
             <div className="flex mt-10 mb-5">
               <h3 className="font-semibold text-gray-600 text-xs uppercase w-2/5">
@@ -25,7 +27,11 @@ export default function cart({ cart, addToCart, removeFromCart, subTotal }) {
                 Total
               </h3>
             </div>
-            {Object.keys(cart).length === 0 && <div>Cart is empty</div>}
+            {Object.keys(cart).length === 0 && (
+              <div className="text-2xl font-semibold text-gray-400">
+                Cart is empty
+              </div>
+            )}
             {Object.keys(cart).map((item) => {
               return (
                 <div
@@ -44,7 +50,6 @@ export default function cart({ cart, addToCart, removeFromCart, subTotal }) {
                       <div
                         onClick={() => {
                           removeFromCart(item, cart[item].qty);
-                          console.log(cart);
                         }}
                         className="font-semibold hover:text-red-500 text-gray-500 text-xs cursor-pointer"
                       >
@@ -106,8 +111,10 @@ export default function cart({ cart, addToCart, removeFromCart, subTotal }) {
               Order Summary
             </h1>
             <div className="flex justify-between mt-10 mb-5">
-              <span className="font-semibold text-sm uppercase">Items 3</span>
-              <span className="font-semibold text-sm">590$</span>
+              <span className="font-semibold text-sm uppercase">
+                Items {Object.keys(cart).length}
+              </span>
+              <span className="font-semibold text-sm">${subTotal}.00</span>
             </div>
             <div>
               <label className="font-medium inline-block mb-3 text-sm uppercase">
@@ -137,11 +144,14 @@ export default function cart({ cart, addToCart, removeFromCart, subTotal }) {
             <div className="border-t mt-8">
               <div className="flex font-semibold justify-between py-6 text-sm uppercase">
                 <span>Total cost</span>
-                <span>$600</span>
+                <span>${subTotal}.00</span>
               </div>
 
               <Link href={"/checkout"}>
-                <button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">
+                <button
+                  disabled={Object.keys(cart).length == 0}
+                  className="disabled:bg-indigo-300 disabled:cursor-not-allowed  bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full"
+                >
                   Checkout
                 </button>
               </Link>

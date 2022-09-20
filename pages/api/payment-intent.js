@@ -10,6 +10,13 @@ async function handler(req, res) {
   const { email, orderId, total, street, city, country, cart } = data;
   const address = `${street}, ${city}, ${country}`;
 
+  if (Object.keys(cart).length == 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Cart is empty",
+    });
+  }
+
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
     amount: total * 100,
@@ -18,11 +25,20 @@ async function handler(req, res) {
       enabled: true,
     },
   });
+
   let subTotal = 0;
   let product;
+
   for (let item in cart) {
     subTotal += cart[item].price * cart[item].qty;
     product = await Product.findOne({ slug: item });
+
+    if (product.availibleQty < cart[item].qty) {
+      return res.status(400).json({
+        success: false,
+        message: "Sorry! Some of Item is Out of Stock",
+      });
+    }
 
     if (product.price !== cart[item].price) {
       return res

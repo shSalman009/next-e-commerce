@@ -41,6 +41,14 @@ export default function Products({ cart }) {
           </div>
         );
       })}
+
+      {Object.keys(cart).length == 0 && (
+        <div className="text-center">
+          <h4 className="text-4xl font-semibold text-gray-400 ">
+            Product Not Available
+          </h4>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { toastError, toastSuccess } from "../components/Toast";
 import { useUser } from "../context/UserContext";
 
 export default function Login() {
@@ -10,7 +10,7 @@ export default function Login() {
     password: "",
   });
 
-  const { user } = useUser();
+  const { userToken, login } = useUser();
 
   const router = useRouter();
 
@@ -24,50 +24,26 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/login`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const res = await response.json();
+    const response = await login(data);
 
-    if (res.success) {
-      toast.success(res.message, {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+    if (response.success) {
+      toastSuccess(response.message);
       setData({
         email: "",
         password: "",
       });
-      localStorage.setItem("token", JSON.stringify(res.token));
+
       router.push("/");
-    } else if (res.error) {
-      toast.error(res.message, {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+    } else if (response.error) {
+      toastError(response.message);
     }
   };
 
   useEffect(() => {
-    if (user) {
+    if (userToken) {
       router.push("/");
     }
-  }, [user]);
+  }, [userToken]);
 
   return (
     <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">

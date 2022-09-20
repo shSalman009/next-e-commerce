@@ -6,7 +6,7 @@ import {
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
-export default function CheckoutForm({ orderId, totalPrice, clearCart }) {
+export default function CheckoutForm({ orderData, totalPrice, clearCart }) {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -71,7 +71,7 @@ export default function CheckoutForm({ orderId, totalPrice, clearCart }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          orderId,
+          orderData,
         }),
       });
 

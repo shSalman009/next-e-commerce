@@ -9,7 +9,7 @@ export default function Checkout({ cart, subTotal }) {
         <div className="container mx-auto">
           <div className=" p-4  leading-loose flex justify-evenly">
             <Products cart={cart} />
-            <Form />
+            <Form cart={cart} />
           </div>
         </div>
       </div>

@@ -1,5 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-
 var CryptoJS = require("crypto-js");
 import connectDb from "../../middleware/mongoose";
 import User from "../../model/User";

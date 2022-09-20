@@ -12,9 +12,9 @@ export default function Orders() {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const token = localStorage.getItem("token");
+      const user = localStorage.getItem("user");
 
-      if (token) {
+      if (user) {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_HOST}/api/getOrders`,
           {
@@ -23,7 +23,7 @@ export default function Orders() {
               Accept: "application/json",
               "Content-Type": "application/json",
             },
-            body: token,
+            body: user,
           }
         );
 

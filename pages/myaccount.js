@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
+import Edit from "../components/profile/Edit";
+import Password from "../components/profile/Password";
+import Profile from "../components/profile/Profile";
+import { useUser } from "../context/UserContext";
 
-export default function myaccount() {
+export default function Myaccount() {
+  const [current, setCurrent] = useState(0);
+
+  const { user, getUser } = useUser();
+
   return (
-    <div>
-      <h2 className="text-center text-3xl my-10 font-bold">My Account</h2>
-    </div>
+    <>
+      {current == 0 && <Profile user={user} setCurrent={setCurrent} />}
+      {current == 1 && (
+        <Edit user={user} getUser={getUser} setCurrent={setCurrent} />
+      )}
+      {current == 3 && <Password user={user} setCurrent={setCurrent} />}
+    </>
   );
 }

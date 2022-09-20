@@ -66,6 +66,7 @@ export async function getServerSideProps(context) {
   const products = await Product.find({ category: "hoodies" });
 
   const hoodies = {};
+
   for (let item of products) {
     if (item.title in hoodies) {
       if (
@@ -82,13 +83,11 @@ export async function getServerSideProps(context) {
       }
     } else {
       hoodies[item.title] = JSON.parse(JSON.stringify(item));
-      if (item.availibleQty > 0) {
-        hoodies[item.title].color = [item.color];
-        hoodies[item.title].size = [item.size];
-      }
+
+      hoodies[item.title].color = [item.color];
+      hoodies[item.title].size = [item.size];
     }
   }
-
   return {
     props: { products: hoodies },
   };

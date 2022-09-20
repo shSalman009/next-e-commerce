@@ -1,20 +1,25 @@
 import mongoose from "mongoose";
+import Error from "next/error";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import Product from "../../model/Product";
 
-export default function Slug({ addToCart, product, variants }) {
-  const [color, setColor] = useState(product.color);
-  const [size, setSize] = useState(product.size);
+export default function Slug({ addToCart, product, variants, error }) {
+  const [colors, setColor] = useState(product?.color);
+  const [sizes, setSize] = useState(product?.size);
 
   const { slug } = useRouter().query;
 
   const changeProduct = (color, size) => {
-    console.log(color, size);
     const url = `${process.env.NEXT_PUBLIC_HOST}/product/${variants[color][size]["slug"]}`;
     window.location = url;
   };
 
+  if (error) {
+    return <Error statusCode={404} />;
+  }
+
+  let { img, title, size, color, desc, availibleQty, price } = product;
   return (
     <section className="text-gray-600 body-font overflow-hidden">
       <div className="container px-5 py-24 mx-auto">
@@ -29,7 +34,7 @@ export default function Slug({ addToCart, product, variants }) {
               BRAND NAME
             </h2>
             <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">
-              {product.title} ( {product.size}/{product.color} )
+              {title} ( {size}/{color} )
             </h1>
             <div className="flex mb-4">
               <span className="flex items-center">
@@ -129,19 +134,19 @@ export default function Slug({ addToCart, product, variants }) {
                 </a>
               </span>
             </div>
-            <p className="leading-relaxed">{product.desc}</p>
+            <p className="leading-relaxed">{desc}</p>
             <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
               <div className="flex">
                 <span className="mr-3">Color</span>
                 {Object.keys(variants).map((clr) => {
-                  if (Object.keys(variants[clr]).includes(size)) {
+                  if (Object.keys(variants[clr]).includes(sizes)) {
                     return (
                       <button
                         key={clr}
-                        onClick={(e) => changeProduct(clr, size)}
+                        onClick={(e) => changeProduct(clr, sizes)}
                         style={{ background: clr }}
                         className={`border-2  ml-1  rounded-full w-6 h-6 focus:outline-none ${
-                          color === clr ? "border-black" : "border-gray-400"
+                          colors === clr ? "border-black" : "border-gray-400"
                         }   `}
                       ></button>
                     );
@@ -152,8 +157,8 @@ export default function Slug({ addToCart, product, variants }) {
                 <span className="mr-3">Size</span>
                 <div className="relative">
                   <select
-                    value={size}
-                    onChange={(e) => changeProduct(color, e.target.value)}
+                    value={sizes}
+                    onChange={(e) => changeProduct(colors, e.target.value)}
                     className="rounded border appearance-none border-gray-300 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 text-base pl-3 pr-10"
                   >
                     {/* {Object.keys(variants[color]).map((siz) => (
@@ -161,16 +166,16 @@ export default function Slug({ addToCart, product, variants }) {
                         {siz}
                       </option>
                     ))} */}
-                    {Object.keys(variants[color]).includes("M") && (
+                    {Object.keys(variants[colors]).includes("M") && (
                       <option value={"M"}>M</option>
                     )}
-                    {Object.keys(variants[color]).includes("X") && (
+                    {Object.keys(variants[colors]).includes("X") && (
                       <option value={"X"}>X</option>
                     )}
-                    {Object.keys(variants[color]).includes("L") && (
+                    {Object.keys(variants[colors]).includes("L") && (
                       <option value={"L"}>L</option>
                     )}
-                    {Object.keys(variants[color]).includes("XL") && (
+                    {Object.keys(variants[colors]).includes("XL") && (
                       <option value={"XL"}>XL</option>
                     )}
                   </select>
@@ -192,25 +197,21 @@ export default function Slug({ addToCart, product, variants }) {
             </div>
             <div className="flex">
               <span className="title-font font-medium text-2xl text-gray-900">
-                ${product.price}.00
+                {availibleQty == 0 ? "Stock Out" : `$${price}.00`}
               </span>
               <div className="flex gap-2 mx-2 ">
-                <button className="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
+                <button
+                  disabled={availibleQty === 0}
+                  className="disabled:bg-indigo-300 flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                >
                   Buy now
                 </button>
                 <button
                   onClick={() => {
-                    addToCart(
-                      slug,
-                      1,
-                      product.price,
-                      product.title,
-                      size,
-                      color,
-                      product.img
-                    );
+                    addToCart(slug, 1, price, title, sizes, colors, img);
                   }}
-                  className="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
+                  disabled={availibleQty === 0}
+                  className="disabled:bg-indigo-300 flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
                 >
                   Add to cart
                 </button>
@@ -235,12 +236,17 @@ export default function Slug({ addToCart, product, variants }) {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps({ query }) {
   if (!mongoose.connections[0].readyState) {
     await mongoose.connect(process.env.MONGO_URI);
   }
 
-  const product = await Product.findOne({ slug: context.query.slug });
+  const product = await Product.findOne({ slug: query.slug });
+
+  if (product === null) {
+    return { props: { error: true } };
+  }
+
   const variants = await Product.find({ title: product.title });
 
   const colorOfSizes = {};

@@ -66,6 +66,7 @@ export async function getServerSideProps(context) {
   const products = await Product.find({ category: "t-shirt" });
 
   const tShirts = {};
+
   for (let item of products) {
     if (item.title in tShirts) {
       if (

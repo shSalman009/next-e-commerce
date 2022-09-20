@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { toastError, toastSuccess } from "../components/Toast";
 
 const Context = createContext();
 
@@ -11,6 +11,7 @@ export const useCart = () => {
 export default function CartContext({ children }) {
   const [cart, setCart] = useState({});
   const [subTotal, setSubTotal] = useState(0);
+  const [quantity, setQuantity] = useState(0);
 
   const router = useRouter();
 
@@ -23,15 +24,8 @@ export default function CartContext({ children }) {
     }
     setCart(newCart);
     localStorage.setItem("cart", JSON.stringify(newCart));
-    toast.success(" Add to cart successfully!", {
-      position: "top-center",
-      autoClose: 2000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+
+    toastSuccess("Add to cart successfully!");
   };
 
   const removeFromCart = (itemCode, qty) => {
@@ -44,15 +38,8 @@ export default function CartContext({ children }) {
     }
     setCart(newCart);
     localStorage.setItem("cart", JSON.stringify(newCart));
-    toast.error("1 Item removed from cart", {
-      position: "top-center",
-      autoClose: 2000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+
+    toastError("1 Item removed from cart");
   };
 
   const clearCart = () => {
@@ -69,8 +56,8 @@ export default function CartContext({ children }) {
   }, [router.query]);
 
   useEffect(() => {
+    // set total price
     const copy = { ...cart };
-
     if (copy) {
       let total = 0;
       for (let item in copy) {
@@ -78,11 +65,18 @@ export default function CartContext({ children }) {
       }
       setSubTotal(total);
     }
+
+    // set quantity
+    let qty = 0;
+    for (let item in cart) {
+      qty += cart[item].qty;
+    }
+    setQuantity(qty);
   }, [cart]);
 
   return (
     <Context.Provider
-      value={{ cart, addToCart, removeFromCart, clearCart, subTotal }}
+      value={{ cart, addToCart, removeFromCart, clearCart, subTotal, quantity }}
     >
       {children}
     </Context.Provider>

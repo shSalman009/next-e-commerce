@@ -1,11 +1,14 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import shortid from "shortid";
+import { useUser } from "../../context/UserContext";
 
-export default function Form() {
+export default function Form({ cart }) {
+  const { userToken } = useUser();
+
   const [data, setData] = useState({
     name: "",
-    email: "",
+    email: userToken ? userToken.email : "",
     street: "",
     city: "",
     country: "",
@@ -56,21 +59,45 @@ export default function Form() {
           aria-label="Name"
         />
       </div>
-      <div className="mt-2">
-        <label className="block text-sm text-gray-600" htmlFor="cus_email">
-          Email
-        </label>
-        <input
-          name="email"
-          value={email}
-          onChange={handleChange}
-          className="w-full px-2 py-2 text-gray-700 bg-gray-200 rounded"
-          type="email"
-          required
-          placeholder="Your Email"
-          aria-label="Email"
-        />
-      </div>
+
+      {userToken ? (
+        <div className="mt-2">
+          <label className="block text-sm text-gray-600" htmlFor="cus_email">
+            Email{" "}
+            <span className="font-semibold text-gray-400">
+              (you can not write here)
+            </span>
+          </label>
+          <input
+            name="email"
+            value={email}
+            className="w-full px-2 py-2 text-gray-700 bg-gray-300 rounded"
+            type="email"
+            required
+            placeholder="Your Email"
+            aria-label="Email"
+            disabled
+            readOnly
+          />
+        </div>
+      ) : (
+        <div className="mt-2">
+          <label className="block text-sm text-gray-600" htmlFor="cus_email">
+            Email
+          </label>
+          <input
+            name="email"
+            value={email}
+            onChange={handleChange}
+            className="w-full px-2 py-2 text-gray-700 bg-gray-200 rounded read-only:"
+            type="email"
+            required
+            placeholder="Your Email"
+            aria-label="Email"
+          />
+        </div>
+      )}
+
       <div className="mt-2">
         <label className="block text-sm text-gray-600" htmlFor="cus_email">
           Address
@@ -141,7 +168,10 @@ export default function Form() {
         />
       </div>
       <div className="mt-4">
-        <button className="px-4 py-1 text-white font-light tracking-wider bg-gray-900 rounded">
+        <button
+          disabled={Object.keys(cart).length == 0}
+          className="disabled:bg-indigo-300 disabled:cursor-not-allowed  bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full"
+        >
           Go for payment
         </button>
       </div>
