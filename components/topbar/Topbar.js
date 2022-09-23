@@ -71,15 +71,29 @@ export default function Topbar() {
                 <ul className="py-1" role="none">
                   <li>
                     <Link href={"/myaccount"}>
-                      <div className="block  items-center py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 ">
+                      <div className="block cursor-pointer  items-center py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 ">
                         My Account
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href={"/orders"}>
+                      <div className="block cursor-pointer  items-center py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 ">
+                        Orders
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href={"/admin"}>
+                      <div className="block cursor-pointer  items-center py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 ">
+                        Admin
                       </div>
                     </Link>
                   </li>
                   <li>
                     <div
                       onClick={logOut}
-                      className="block items-center py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 "
+                      className="block cursor-pointer items-center py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 "
                     >
                       Sign Out
                     </div>

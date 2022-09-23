@@ -1,0 +1,24 @@
+import React from "react";
+
+export default function Input({ name, value, onchange, type, placeholder }) {
+  return (
+    <div className="relative z-0 mb-6 w-full group">
+      <label
+        htmlFor={name}
+        className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 capitalize"
+      >
+        {name}
+      </label>
+      <input
+        required
+        name={name}
+        value={value}
+        onChange={onchange}
+        type={type}
+        id={name}
+        placeholder={placeholder ? placeholder : `Add a ${name}...`}
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      />
+    </div>
+  );
+}
